@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/DSH-0.1.0--rc.6-0b6ff4?style=flat-square" alt="DSH 0.1.0-rc.6">
+  <img src="https://img.shields.io/badge/DSH-0.1.1--rc.2-0b6ff4?style=flat-square" alt="DSH 0.1.1-rc.2">
   <img src="https://img.shields.io/badge/Node.js-22.19%2B-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 22.19+">
   <img src="https://img.shields.io/badge/local--first-SQLite-168f91?style=flat-square&logo=sqlite&logoColor=white" alt="Local-first SQLite">
   <img src="https://img.shields.io/badge/license-noncommercial-d63d4b?style=flat-square" alt="Noncommercial license">
@@ -63,7 +63,7 @@ DSH Toolbox 是给单人本地工作流准备的 DeepSeek Harness 配套工具�
 
 - Node.js `^22.19.0 || >=24.0.0` (`node:sqlite` is built in)
 - npm, for packing the local bundles
-- `@deepseek-ai/dsh@0.1.0-rc.6`
+- `@deepseek-ai/dsh@0.1.1-rc.2`
 - A local DSH profile you are allowed to modify
 
 Read-only Switchboard inspection works without the DSH CLI on `PATH`. Applying or rolling back a change requires the CLI by default because a successful `dsh --profile <name> --dump-config` is the runtime safety gate.
@@ -72,15 +72,15 @@ The tested runtime combination is:
 
 | Component | Tested version |
 | --- | --- |
-| DeepSeek Harness | `0.1.0-rc.6` |
-| DSH Tools | `0.1.0-rc.6` |
+| DeepSeek Harness | `0.1.1-rc.2` |
+| DSH Tools | `0.1.1-rc.2` |
 | Cordis | `4.0.1` |
 | Node.js | `24.x` and the declared `22.19+` range |
 
 Install the pinned DSH CLI if it is not already available:
 
 ```sh
-npm install --global @deepseek-ai/dsh@0.1.0-rc.6
+npm install --global @deepseek-ai/dsh@0.1.1-rc.2
 dsh --version
 ```
 
@@ -222,7 +222,7 @@ Preflight is static and read-only: it does not run scripts, install dependencies
 Example request:
 
 ```text
-Discover DSH bundles under packages, check them against DSH Tools 0.1.0-rc.6,
+Discover DSH bundles under packages, check them against DSH Tools 0.1.1-rc.2,
 Cordis 4.0.1, and my current Node version, then save a compatibility snapshot.
 ```
 

@@ -31,7 +31,7 @@ async function fixture(options = {}) {
     files: ['index.js', 'cordis.patch.yml', 'LICENSE'],
     license: 'MIT',
     engines: { node: '>=22.19.0' },
-    dependencies: { '@deepseek-ai/dsh-tools': '0.1.0-rc.6' },
+    dependencies: { '@deepseek-ai/dsh-tools': '0.1.1-rc.2' },
     peerDependencies: { '@deepseek-ai/cordis': '^4.0.1' },
     dsh: { bundle: { patch: './cordis.patch.yml' } },
   }, null, 2) + '\n')
@@ -41,7 +41,7 @@ async function fixture(options = {}) {
   const calls = []
   const commandRunner = options.commandRunner ?? (async request => {
     calls.push(request)
-    return { ok: true, code: 0, stdout: request.args[0] === '--version' ? '0.1.0-rc.6\n' : '# valid config\n', stderr: '' }
+    return { ok: true, code: 0, stdout: request.args[0] === '--version' ? '0.1.1-rc.2\n' : '# valid config\n', stderr: '' }
   })
   const adapter = new DshAdapter({ home, dataDir, commandRunner })
   return { root, home, dataDir, profileDir, packageDir, manifest, adapter, calls }
@@ -65,6 +65,22 @@ test('discovers profiles without following a symlinked profile directory', async
   const profile = await setup.adapter.readProfile('toolbox')
   assert.deepEqual(profile.bundles, [BASE])
   assert.equal(profile.inactiveBundleDependencies[0].packageName, EXAMPLE)
+})
+
+test('resolves bundle manifests from the DSH installation fallback before profile-local copies', async t => {
+  const setup = await fixture({ bundles: [EXAMPLE] })
+  t.after(() => setup.adapter.close())
+  const installedDir = join(setup.home, 'profiles', 'node_modules', '@example', 'research-bundle')
+  await mkdir(installedDir, { recursive: true })
+  await writeFile(join(installedDir, 'package.json'), JSON.stringify({
+    name: EXAMPLE,
+    version: '9.9.9',
+    dsh: { bundle: { patch: './cordis.patch.yml' } },
+  }, null, 2) + '\n')
+
+  const profile = await setup.adapter.readProfile('toolbox')
+  assert.equal(profile.bundleDetails[0].source, 'installation-fallback')
+  assert.equal(profile.bundleDetails[0].version, '9.9.9')
 })
 
 test('plans, atomically applies, records, validates, and rolls back a bundle change', async t => {
@@ -133,7 +149,7 @@ test('integrates Preflight and Compatibility Radar and writes private local repo
   const setup = await fixture({ bundles: [EXAMPLE] })
   t.after(() => setup.adapter.close())
   const result = await setup.adapter.preflightPlugin(setup.packageDir, {
-    dshToolsVersion: '0.1.0-rc.6',
+    dshToolsVersion: '0.1.1-rc.2',
     cordisVersion: '4.0.1',
     nodeVersion: process.versions.node,
   })
@@ -141,7 +157,7 @@ test('integrates Preflight and Compatibility Radar and writes private local repo
   assert.equal(result.compatibility.summary.compatible, 1)
 
   const report = await setup.adapter.writeProfileReport('toolbox', { audit: true, target: {
-    dshToolsVersion: '0.1.0-rc.6',
+    dshToolsVersion: '0.1.1-rc.2',
     cordisVersion: '4.0.1',
     nodeVersion: process.versions.node,
   } })

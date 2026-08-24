@@ -2,6 +2,7 @@
 
 Status: accepted for MVP implementation  
 Date: 2026-08-14
+Compatibility review: DSH `0.1.1-rc.2` on 2026-08-24
 
 ## Decision
 
@@ -53,6 +54,7 @@ The implementation follows the upstream DeepSeek Harness contract:
 - `cordis.patch.yml` is the profile-owned final patch layer;
 - bundle packages declare `dsh.bundle.patch`;
 - bundle ordering is semantically significant;
+- bundle packages resolve from the DSH installation before the Profile directory;
 - the official `dsh plugin` command owns dependency installation and reconciliation.
 
 ## Safety invariants
@@ -81,7 +83,7 @@ The repository's original code remains under PolyForm Noncommercial 1.0.0. CC Sw
 
 ## Primary references
 
-- [DeepSeek Harness profile implementation](https://github.com/deepseek-ai/deepseek-harness/blob/47f943859bef60e4160492346772ded9b24f765a/packages/boot/app-boot/src/profile.ts)
-- [DeepSeek Harness CLI behavior reference](https://github.com/deepseek-ai/deepseek-harness/blob/47f943859bef60e4160492346772ded9b24f765a/apps/cli/reference/README.md)
-- [DeepSeek Harness plugin forwarder and reconciliation](https://github.com/deepseek-ai/deepseek-harness/blob/47f943859bef60e4160492346772ded9b24f765a/apps/cli/src/plugin.ts)
+- [DeepSeek Harness profile implementation](https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/packages/boot/app-boot/src/profile.ts)
+- [DeepSeek Harness CLI behavior reference](https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/apps/cli/reference/README.md)
+- [DeepSeek Harness plugin forwarder and reconciliation](https://github.com/deepseek-ai/deepseek-harness/blob/b150a551b8d465e31e418e1b2eaf5e79bbb7d28e/apps/cli/src/plugin.ts)
 - [CC Switch repository](https://github.com/farion1231/cc-switch) and its [MIT license](https://github.com/farion1231/cc-switch/blob/eb69e4922ee187a261fd29c216a738e838f85bc4/LICENSE)

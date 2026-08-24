@@ -51,7 +51,7 @@ config:
 - English and Chinese pain language is supported, but taxonomy quality depends on source phrasing.
 - HTML extraction is intentionally conservative and is not a full browser renderer.
 - Authenticated social media crawling, CAPTCHA bypass, cloud sync, multi-user access, and auto-publishing are out of scope.
-- The tested target is DSH `0.1.0-rc.6`; repeat an isolated install check before changing RCs.
+- The tested target is DSH `0.1.1-rc.2`; repeat an isolated install check before changing RCs.
 
 The SQLite database and generated reports may contain private or copyrighted material. They are ignored by the repository defaults; review reports before sharing. See the repository privacy and security policies.
 

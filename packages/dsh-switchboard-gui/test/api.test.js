@@ -30,7 +30,7 @@ async function fixture(t) {
   }, null, 2) + "\n");
   await writeFile(join(bundleDir, "cordis.patch.yml"), "[]\n");
 
-  const commandRunner = async ({ args }) => ({ ok: true, code: 0, stdout: args[0] === "--version" ? "0.1.0-rc.6\n" : "# valid\n", stderr: "" });
+  const commandRunner = async ({ args }) => ({ ok: true, code: 0, stdout: args[0] === "--version" ? "0.1.1-rc.2\n" : "# valid\n", stderr: "" });
   const adapter = new DshAdapter({
     home,
     dataDir,
@@ -69,7 +69,7 @@ test("GUI API keeps bundle changes plan-first, validates apply, and supports saf
   const setup = await fixture(t);
   const bootstrap = await json(await fetch(`${setup.origin}/api/bootstrap?profile=toolbox`));
   assert.equal(bootstrap.response.status, 200);
-  assert.equal(bootstrap.body.runtime.version, "0.1.0-rc.6");
+  assert.equal(bootstrap.body.runtime.version, "0.1.1-rc.2");
   assert.equal(bootstrap.body.selectedProfile.name, "toolbox");
   assert.equal(bootstrap.body.health.ok, true);
   assert.equal(bootstrap.body.localOnly, true);

@@ -4,7 +4,7 @@ An independent, local control plane for DeepSeek Harness profiles. It discovers 
 
 > Technical preview · noncommercial use only. This package is currently private and is distributed as part of the DSH Toolbox source repository.
 
-The macOS MVP smoke test uses the official DSH `0.1.0-rc.6`: four Toolbox bundles are installed into an isolated profile, the full plugin tree is loaded, a bundle reorder is atomically applied and validated, and rollback restores the original SHA-256 profile state.
+The macOS MVP smoke test uses the official DSH `0.1.1-rc.2`: four Toolbox bundles are installed into an isolated profile, the full plugin tree is loaded, a bundle reorder is atomically applied and validated, and rollback restores the original SHA-256 profile state.
 
 ## Why it runs outside DSH
 
@@ -58,10 +58,10 @@ node packages/dsh-switchboard/bin/dsh-switchboard.js rollback TRANSACTION_ID
 
 ```sh
 node packages/dsh-switchboard/bin/dsh-switchboard.js preflight packages/context-switchboard \
-  --dsh-tools 0.1.0-rc.6 --cordis 4.0.1
+  --dsh-tools 0.1.1-rc.2 --cordis 4.0.1
 
 node packages/dsh-switchboard/bin/dsh-switchboard.js report toolbox --audit \
-  --dsh-tools 0.1.0-rc.6 --cordis 4.0.1
+  --dsh-tools 0.1.1-rc.2 --cordis 4.0.1
 ```
 
 Reports are Markdown plus self-contained HTML. SQLite receipts, backups, and reports default to `~/.local/share/dsh-toolbox/dsh-switchboard`. Files are created with user-only permissions where supported. No profile data is uploaded, and no registry or update polling runs in the background.
