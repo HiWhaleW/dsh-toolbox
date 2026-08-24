@@ -1,5 +1,5 @@
 const demoBundles = [
-  { packageName: "@deepseek-ai/dsh-base", version: "0.1.0-rc.6", source: "demo", resolved: true, hasPatch: true },
+  { packageName: "@deepseek-ai/dsh-base", version: "0.1.1-rc.2", source: "demo", resolved: true, hasPatch: true },
   { packageName: "@dsh-toolbox/compatibility-radar", version: "0.2.1", source: "demo", resolved: true, hasPatch: true },
   { packageName: "@dsh-toolbox/context-switchboard", version: "0.2.1", source: "demo", resolved: true, hasPatch: true },
   { packageName: "@dsh-toolbox/plugin-preflight", version: "0.2.1", source: "demo", resolved: true, hasPatch: true },
@@ -89,7 +89,7 @@ export function createDemoApi() {
       demo: true,
       dshHome: "在线演示数据（不读取本机）",
       dataDir: "当前浏览器内存（刷新即复原）",
-      runtime: { installed: true, version: "0.1.0-rc.6" },
+      runtime: { installed: true, version: "0.1.1-rc.2" },
       nodeVersion: "24.19.0",
       profiles,
       selectedProfile: profileDetails(selectedName),

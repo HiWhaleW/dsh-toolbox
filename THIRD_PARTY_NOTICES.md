@@ -10,7 +10,7 @@ Implementation patterns were studied from publicly visible DSH plugins including
 
 OpenCode Dynamic Context Pruning and other agent plugins may be referenced as product inspiration only. Code from repositories without a compatible license, including AGPL code, must not be copied or incorporated without a documented license decision.
 
-Each plugin currently depends at runtime on `@deepseek-ai/dsh-tools@0.1.0-rc.6` and declares `@deepseek-ai/cordis^4.0.1` as a peer dependency. Those packages and their transitive dependencies retain their own licenses and notices. Review the packed dependency tree and include any notices required by those terms before redistributing a bundled dependency archive.
+Each plugin currently depends at runtime on `@deepseek-ai/dsh-tools@0.1.1-rc.2` and declares `@deepseek-ai/cordis^4.0.1` as a peer dependency. Those packages and their transitive dependencies retain their own licenses and notices. Review the packed dependency tree and include any notices required by those terms before redistributing a bundled dependency archive.
 
 The DSH Switchboard GUI directly bundles the following frontend assets/runtime code under their original licenses:
 

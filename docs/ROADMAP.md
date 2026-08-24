@@ -53,10 +53,10 @@
 - [x] Node 22.19+/24 test suite and workspace validation
 - [x] Package dry-runs for all four bundles
 - [x] Plugin Preflight self-scans and current/breaking compatibility matrices
-- [x] Isolated installation/config-load/tool-execution smoke test against `@deepseek-ai/dsh@0.1.0-rc.6`
+- [x] Isolated installation/config-load/tool-execution smoke test against `@deepseek-ai/dsh@0.1.1-rc.2`
 - [ ] Cross-platform user feedback and hardening
 - [x] Switchboard adapter unit and failure-path tests against isolated DSH homes
-- [x] Switchboard install, full plugin-tree/Web load, HTTP health, apply, validation, and rollback smoke test against a real DSH `0.1.0-rc.6` CLI on macOS
+- [x] Switchboard install, full plugin-tree/Web load, HTTP health, apply, validation, and rollback smoke test against a real DSH `0.1.1-rc.2` CLI on macOS
 - [ ] Switchboard smoke test against a real installed DSH CLI on Linux and Windows
 
 The `0.2.1` source is public under the PolyForm Noncommercial License 1.0.0; commercial use is not permitted. Earlier MIT grants remain applicable to copies received under those earlier releases. npm publication and GitHub Releases remain intentionally deferred pending cross-platform feedback and an explicit release decision.

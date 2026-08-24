@@ -109,8 +109,8 @@ async function resolveBundleManifest(home, profileDir, packageName) {
   const segments = packageSegments(packageName)
   if (segments.some(segment => !segment || segment === '.' || segment === '..')) return null
   const candidates = [
-    { source: 'profile', path: join(profileDir, 'node_modules', ...segments) },
     { source: 'installation-fallback', path: join(home, 'profiles', 'node_modules', ...segments) },
+    { source: 'profile', path: join(profileDir, 'node_modules', ...segments) },
   ]
   for (const candidate of candidates) {
     try {

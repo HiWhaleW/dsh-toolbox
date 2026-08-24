@@ -22,10 +22,10 @@ for (const packageName of packages) {
   if (manifest.dependencies?.['@deepseek-ai/dsh-tools']) {
     throw new Error(`${packageName}: DSH Tools must not be a production dependency; a duplicate runtime breaks scheduler symbol identity`)
   }
-  if (manifest.peerDependencies?.['@deepseek-ai/dsh-tools'] !== '0.1.0-rc.6') {
+  if (manifest.peerDependencies?.['@deepseek-ai/dsh-tools'] !== '0.1.1-rc.2') {
     throw new Error(`${packageName}: must peer-pin the loader-smoked DSH Tools runtime`)
   }
-  if (manifest.devDependencies?.['@deepseek-ai/dsh-tools'] !== '0.1.0-rc.6') {
+  if (manifest.devDependencies?.['@deepseek-ai/dsh-tools'] !== '0.1.1-rc.2') {
     throw new Error(`${packageName}: must keep DSH Tools available for local development only`)
   }
   if (manifest.license !== 'SEE LICENSE IN LICENSE') {
