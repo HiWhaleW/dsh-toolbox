@@ -1,12 +1,12 @@
 <p align="center">
-  ![Light-theme DSH Switchboard showing a real Profile health check, pending Bundle plan, Bundle inventory, and local activity](docs/assets/dsh-switchboard-gui.png)
+  <img src="docs/assets/dsh-switchboard-gui.png" alt="DSH Switchboard showing a local Profile health check, pending Bundle plan, Bundle inventory, and recent activity" width="920">
 </p>
 
 <h1 align="center">DSH Toolbox</h1>
 
 <p align="center">
-  给 DeepSeek Harness 的本地工具箱。<br>
-  产品研究、上下文切换、插件预检和兼容性监控，都收进一个安全的可视化控制台。
+  A local-first toolbox for DeepSeek Harness.<br>
+  Product research, context switching, plugin preflight, and compatibility monitoring in one safety-focused visual control panel.
 </p>
 
 <p align="center">
@@ -18,46 +18,46 @@
 </p>
 
 <p align="center">
-  <a href="https://dsh-toolbox.lisongyang0130.chatgpt.site"><strong>在线交互演示</strong></a>
+  <a href="https://dsh-toolbox.lisongyang0130.chatgpt.site"><strong>Live interactive demo</strong></a>
   ·
-  <a href="#five-minute-installation"><strong>五分钟安装</strong></a>
+  <a href="#five-minute-installation"><strong>Five-minute installation</strong></a>
   ·
-  <a href="https://github.com/HiWhaleW/dsh-toolbox/issues"><strong>反馈问题</strong></a>
+  <a href="https://github.com/HiWhaleW/dsh-toolbox/issues"><strong>Report an issue</strong></a>
 </p>
 
 > [!NOTE]
-> 在线版是安全演示：健康检查、Bundle 开关、变更计划、活动和回滚只在当前浏览器内存中模拟，刷新即复原。它不会连接访客电脑，也不会读取 DSH Profile、API 凭据或 SQLite 数据。安装本地版后才会接通真实 DSH 链路。
+> The online version is a safe demo: health checks, Bundle toggles, change plans, activity, and rollback are simulated in the current browser's memory and reset on refresh. It never connects to a visitor's computer or reads DSH Profiles, API credentials, or SQLite data. Install the local version to connect to a real DSH workflow.
 
 > [!IMPORTANT]
-> **Experimental MVP · 仅限非商业用途。** DeepSeek Harness 仍处于 Developer Preview，版本升级可能影响 Profile Bundle 兼容性。本项目独立开发，与 DeepSeek 无隶属或背书关系。
+> **Experimental MVP · Noncommercial use only.** DeepSeek Harness remains in Developer Preview, and upgrades may affect Profile Bundle compatibility. This project is independently developed and is not affiliated with or endorsed by DeepSeek.
 
-## DSH Toolbox 是什么
+## What is DSH Toolbox?
 
-DSH Toolbox 是给单人本地工作流准备的 DeepSeek Harness 配套工具。四个插件作为原生 DSH Profile Bundles 运行；DSH Switchboard 则位于当前 Harness 进程之外，负责查看 Profile、运行健康检查、预览 Bundle 变更、创建备份并安全回滚。
+DSH Toolbox is a DeepSeek Harness companion for individual, local-first workflows. Four plugins run as native DSH Profile Bundles. DSH Switchboard runs outside the active Harness process to inspect Profiles, run health checks, preview Bundle changes, create backups, and roll changes back safely.
 
-默认没有账号、托管后端、行为分析、遥测、后台注册表检查或自动升级。真实运行数据保存在本机 SQLite；需要修改 Profile 时，一定先生成计划，用户确认后才写入，并保存可追溯的事务记录。
+There are no accounts, hosted backends, behavioral analytics, telemetry, background registry checks, or automatic upgrades by default. Real runtime data stays in local SQLite. Profile changes always begin with a plan, require user confirmation before writing, and leave an auditable transaction record.
 
-## 五个组成部分
+## Five components
 
-| 组件 | 日常用途 | 工具数 |
+| Component | Everyday use | Tools |
 | --- | --- | ---: |
-| [`@dsh-toolbox/product-research-workbench`](packages/product-research-workbench) | 导入 URL/文本证据，整理发现、评估机会、备份项目并生成 Markdown/HTML 报告。 | 12 |
-| [`@dsh-toolbox/context-switchboard`](packages/context-switchboard) | 把任务路由到有边界的上下文，激活原生运行时上下文并支持回滚。 | 10 |
-| [`@dsh-toolbox/plugin-preflight`](packages/plugin-preflight) | 安装前检查本地 Bundle 的包语义、能力、策略、SBOM 与指纹。 | 2 |
-| [`@dsh-toolbox/compatibility-radar`](packages/compatibility-radar) | 发现 Bundle，对比目标运行时，保存/比较快照并生成升级报告。 | 7 |
-| [`@dsh-toolbox/dsh-switchboard`](packages/dsh-switchboard) | 发现 DSH Profile、检查 Bundle、规划变更、验证、备份、报告与回滚。 | CLI / 控制面 |
+| [`@dsh-toolbox/product-research-workbench`](packages/product-research-workbench) | Import URL or text evidence, organize findings, evaluate opportunities, back up projects, and generate Markdown/HTML reports. | 12 |
+| [`@dsh-toolbox/context-switchboard`](packages/context-switchboard) | Route tasks into bounded contexts, activate native runtime context, and support rollback. | 10 |
+| [`@dsh-toolbox/plugin-preflight`](packages/plugin-preflight) | Inspect local Bundles before installation for package semantics, capabilities, policy, SBOM data, and fingerprints. | 2 |
+| [`@dsh-toolbox/compatibility-radar`](packages/compatibility-radar) | Discover Bundles, compare them with a target runtime, save and compare snapshots, and generate upgrade reports. | 7 |
+| [`@dsh-toolbox/dsh-switchboard`](packages/dsh-switchboard) | Discover DSH Profiles, inspect Bundles, plan and validate changes, create backups and reports, and roll back safely. | CLI / control plane |
 
-前四项是可以独立安装的 DSH Profile Bundles；第五项是统一的本地控制面。Product Research Workbench 和相关报告支持 Markdown + HTML 输出，运行数据默认使用 SQLite 保存。
+The first four components are independently installable DSH Profile Bundles. The fifth is the unified local control plane. Product Research Workbench and related reports support Markdown and HTML output, while runtime data is stored in SQLite by default.
 
-## 在线演示与本地完整版
+## Online demo vs. local installation
 
-| 能力 | 在线演示 | 本地完整版 |
+| Capability | Online demo | Local installation |
 | --- | --- | --- |
-| 查看四个页面和固定右侧活动栏 | 可用 | 可用 |
-| 切换 Profile、筛选活动、审阅 Bundle 计划 | 浏览器内存模拟 | 连接真实本地数据 |
-| 运行 `dsh --dump-config` 健康检查 | 模拟成功结果 | 真实执行 |
-| 写入 Profile、备份、回滚、生成报告 | 不写入，刷新即复原 | 计划确认后真实执行 |
-| 数据去向 | 当前浏览器内存 | 用户电脑上的 SQLite 与私有目录 |
+| Explore four views and a fixed activity sidebar | Available | Available |
+| Switch Profiles, filter activity, and review Bundle plans | Simulated in browser memory | Connected to real local data |
+| Run `dsh --dump-config` health checks | Simulated success result | Real command execution |
+| Write Profiles, create backups, roll back, and generate reports | No writes; resets on refresh | Real execution after plan confirmation |
+| Data destination | Current browser memory | SQLite and private directories on the user's computer |
 
 ## Requirements
 
@@ -122,8 +122,6 @@ Each package pins the small DSH tool-definition runtime needed for reliable out-
 
 DSH Switchboard is a local settings app for DeepSeek Harness. It shows which Profiles and Profile Bundles are installed, checks whether a Profile can start, previews every change, and keeps a backup so the change can be rolled back safely.
 
-*The real light-theme interface: left-side navigation, a task-focused center panel, and a fixed recent-activity panel on the right.*
-
 The navigation opens four working views in the center panel:
 
 - **DSH Profiles** — inspect a Profile, run its DSH health check, review installed Bundles, and plan enable/disable changes.
@@ -133,7 +131,7 @@ The navigation opens four working views in the center panel:
 
 Recent activity remains visible on the right while you move between views. Long lists scroll inside their own panels, so the overall application frame stays fixed and readable.
 
-The local backup dialog also has an explicit **立即备份** action. These manual Profile snapshots can be restored later; before restoring one, Switchboard first saves the current Profile as a new recovery point, then restores the selected snapshot and runs DSH configuration validation. If validation fails, it attempts to return to that recovery point automatically.
+The local backup dialog also has an explicit **Back up now** action. These manual Profile snapshots can be restored later; before restoring one, Switchboard first saves the current Profile as a new recovery point, then restores the selected snapshot and runs DSH configuration validation. If validation fails, it attempts to return to that recovery point automatically.
 
 From the repository checkout:
 
