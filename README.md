@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/dsh-toolbox-overview.png" alt="DSH Toolbox — 四个 DeepSeek Harness 插件与一个本地可视化控制台" width="920">
+  ![Light-theme DSH Switchboard showing a real Profile health check, pending Bundle plan, Bundle inventory, and local activity](docs/assets/dsh-switchboard-gui.png)
 </p>
 
 <h1 align="center">DSH Toolbox</h1>
@@ -121,8 +121,6 @@ Each package pins the small DSH tool-definition runtime needed for reliable out-
 ### Open the DSH Switchboard GUI
 
 DSH Switchboard is a local settings app for DeepSeek Harness. It shows which Profiles and Profile Bundles are installed, checks whether a Profile can start, previews every change, and keeps a backup so the change can be rolled back safely.
-
-![Light-theme DSH Switchboard showing a real Profile health check, pending Bundle plan, Bundle inventory, and local activity](docs/assets/dsh-switchboard-gui.png)
 
 *The real light-theme interface: left-side navigation, a task-focused center panel, and a fixed recent-activity panel on the right.*
 
