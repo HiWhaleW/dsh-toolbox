@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@fontsource/inter": "5.2.8",
-    "@vitejs/plugin-react": "5.0.4",
+    "@vitejs/plugin-react": "6.1.0",
     "bootstrap-icons": "1.13.1",
-    "vite": "6.4.2",
+    "vite": "8.2.2",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
