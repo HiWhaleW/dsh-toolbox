@@ -25,3 +25,23 @@ test('detect executes an npm-style .cmd shim on Windows without enabling a shell
   assert.equal(detected.installed, true)
   assert.equal(detected.version, '0.1.0-rc.6')
 })
+
+test('keeps stdout and stderr output caps independent on Windows', { skip: process.platform !== 'win32' }, async t => {
+  const root = await mkdtemp(join(tmpdir(), 'dsh switchboard windows-streams-'))
+  const bin = join(root, 'npm global bin')
+  await mkdir(bin, { recursive: true })
+  await writeFile(join(bin, 'dsh-shim.cjs'), 'process.stdout.write("x".repeat(3 * 1024 * 1024)); process.stderr.write("y".repeat(2 * 1024 * 1024))\n')
+  await writeFile(join(bin, 'dsh.cmd'), '@echo off\r\nnode "%~dp0dsh-shim.cjs" %*\r\n')
+  const adapter = new DshAdapter({
+    home: join(root, 'home'),
+    dataDir: join(root, 'data'),
+    env: { PATH: `${bin}${delimiter}${process.env.PATH ?? ''}` },
+  })
+  t.after(async () => {
+    adapter.close()
+    await rm(root, { recursive: true, force: true })
+  })
+
+  const detected = await adapter.detect()
+  assert.equal(detected.installed, true)
+})

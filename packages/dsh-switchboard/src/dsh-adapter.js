@@ -130,7 +130,7 @@ async function defaultCommandRunner({ command, args, cwd, env, timeoutMs = 30_00
     const maxBuffer = 4 * 1024 * 1024
     let stdout = ''
     let stderr = ''
-    let outputBytes = 0
+    const outputBytes = { stdout: 0, stderr: 0 }
     let failure = null
     let settled = false
     const child = spawn(command, args, { cwd, env, shell: false, windowsHide: true })
@@ -147,20 +147,20 @@ async function defaultCommandRunner({ command, args, cwd, env, timeoutMs = 30_00
         notFound: cause?.code === 'ENOENT',
       })
     }
-    const append = (stream, chunk) => {
+    const append = (streamName, stream, chunk) => {
       const text = chunk.toString('utf8')
-      outputBytes += Buffer.byteLength(text)
-      if (outputBytes > maxBuffer) {
+      outputBytes[streamName] += Buffer.byteLength(text)
+      if (outputBytes[streamName] > maxBuffer) {
         if (!failure) {
-          failure = new Error(`DSH command output exceeded ${maxBuffer} bytes`)
+          failure = new Error(`DSH command ${streamName} exceeded ${maxBuffer} bytes`)
           child.kill()
         }
         return stream
       }
       return stream + text
     }
-    child.stdout?.on('data', chunk => { stdout = append(stdout, chunk) })
-    child.stderr?.on('data', chunk => { stderr = append(stderr, chunk) })
+    child.stdout?.on('data', chunk => { stdout = append('stdout', stdout, chunk) })
+    child.stderr?.on('data', chunk => { stderr = append('stderr', stderr, chunk) })
     child.once('error', error => finish(null, error))
     child.once('close', code => finish(code))
     const timer = setTimeout(() => {
