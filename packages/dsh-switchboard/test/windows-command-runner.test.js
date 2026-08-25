@@ -9,7 +9,8 @@ test('detect executes an npm-style .cmd shim on Windows without enabling a shell
   const root = await mkdtemp(join(tmpdir(), 'dsh switchboard windows-'))
   const bin = join(root, 'npm global bin')
   await mkdir(bin, { recursive: true })
-  await writeFile(join(bin, 'dsh.cmd'), '@echo off\r\nif "%1"=="--version" echo 0.1.0-rc.6\r\n')
+  await writeFile(join(bin, 'dsh-shim.cjs'), 'if (process.argv[2] === "--version") console.log("0.1.0-rc.6")\n')
+  await writeFile(join(bin, 'dsh.cmd'), '@echo off\r\nnode "%~dp0dsh-shim.cjs" %*\r\n')
   const adapter = new DshAdapter({
     home: join(root, 'home'),
     dataDir: join(root, 'data'),
