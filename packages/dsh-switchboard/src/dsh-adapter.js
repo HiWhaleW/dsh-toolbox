@@ -1,5 +1,4 @@
 import { createHash, randomUUID } from 'node:crypto'
-import { execFile as execFileCallback } from 'node:child_process'
 import {
   chmod,
   lstat,
@@ -9,21 +8,22 @@ import {
   readdir,
   realpath,
   rename,
+  rm,
   unlink,
   writeFile,
 } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, isAbsolute, join, relative, resolve, sep } from 'node:path'
-import { promisify } from 'node:util'
+import spawn from 'cross-spawn'
 import { scanPlugin } from '../../plugin-preflight/src/preflight.js'
 import { CompatibilityRadar } from '../../compatibility-radar/src/radar.js'
 import { formatProfileHtml, formatProfileMarkdown } from './report.js'
 import { SwitchboardStore } from './store.js'
 
-const execFile = promisify(execFileCallback)
 const PROFILE_MANIFEST = 'package.json'
 const PROFILE_PATCH = 'cordis.patch.yml'
 const PLAN_SCHEMA = 'dsh-switchboard/change-plan/v1'
+const BACKUP_SCHEMA = 'dsh-switchboard/manual-backup/v1'
 const MAX_MANIFEST_BYTES = 2 * 1024 * 1024
 const TRANSACTION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -126,18 +126,49 @@ async function resolveBundleManifest(home, profileDir, packageName) {
 }
 
 async function defaultCommandRunner({ command, args, cwd, env, timeoutMs = 30_000 }) {
-  try {
-    const result = await execFile(command, args, { cwd, env, timeout: timeoutMs, maxBuffer: 4 * 1024 * 1024, shell: false })
-    return { ok: true, code: 0, stdout: result.stdout ?? '', stderr: result.stderr ?? '' }
-  } catch (error) {
-    return {
-      ok: false,
-      code: error.code === 'ENOENT' ? 127 : Number.isInteger(error.code) ? error.code : 1,
-      stdout: error.stdout ?? '',
-      stderr: error.stderr ?? error.message,
-      notFound: error.code === 'ENOENT',
+  return new Promise(resolveResult => {
+    const maxBuffer = 4 * 1024 * 1024
+    let stdout = ''
+    let stderr = ''
+    let outputBytes = 0
+    let failure = null
+    let settled = false
+    const child = spawn(command, args, { cwd, env, shell: false, windowsHide: true })
+    const finish = (code, error = null) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      const cause = failure ?? error
+      resolveResult({
+        ok: !cause && code === 0,
+        code: cause?.code === 'ENOENT' ? 127 : Number.isInteger(code) ? code : Number.isInteger(cause?.code) ? cause.code : 1,
+        stdout,
+        stderr: stderr || cause?.message || '',
+        notFound: cause?.code === 'ENOENT',
+      })
     }
-  }
+    const append = (stream, chunk) => {
+      const text = chunk.toString('utf8')
+      outputBytes += Buffer.byteLength(text)
+      if (outputBytes > maxBuffer) {
+        if (!failure) {
+          failure = new Error(`DSH command output exceeded ${maxBuffer} bytes`)
+          child.kill()
+        }
+        return stream
+      }
+      return stream + text
+    }
+    child.stdout?.on('data', chunk => { stdout = append(stdout, chunk) })
+    child.stderr?.on('data', chunk => { stderr = append(stderr, chunk) })
+    child.once('error', error => finish(null, error))
+    child.once('close', code => finish(code))
+    const timer = setTimeout(() => {
+      failure = new Error(`DSH command timed out after ${timeoutMs}ms`)
+      child.kill()
+    }, timeoutMs)
+    timer.unref?.()
+  })
 }
 
 async function atomicWrite(path, bytes, mode, transactionId) {
@@ -350,6 +381,112 @@ export class DshAdapter {
     return backupDir
   }
 
+  async recordManualBackup(profile, reason = 'Manual backup') {
+    const id = randomUUID()
+    const backupDir = await this.createBackup(profile, id)
+    const verified = await this.readProfile(profile.name)
+    if (verified.stateHash !== profile.stateHash) {
+      await rm(backupDir, { recursive: true, force: true })
+      throw new Error('Profile changed while the manual backup was being created')
+    }
+    const plan = {
+      schema: BACKUP_SCHEMA,
+      id,
+      adapter: this.name,
+      action: 'manual-backup',
+      profile: profile.name,
+      baseStateHash: profile.stateHash,
+      previousBundles: profile.bundles,
+      nextBundles: profile.bundles,
+      changes: { additions: [], removals: [], moved: [] },
+      reason,
+      createdAt: new Date().toISOString(),
+    }
+    this.store.create({ plan, status: 'available', backupDir })
+    return this.store.update(id, {
+      result: {
+        snapshotStateHash: profile.stateHash,
+        bundles: profile.bundles,
+        backedUpAt: new Date().toISOString(),
+      },
+    })
+  }
+
+  async backup(profileName, options = {}) {
+    let profile = await this.readProfile(profileName)
+    const lockId = randomUUID()
+    const lockPath = await this.acquireLock(profile.dir, `${lockId}-backup`)
+    try {
+      profile = await this.readProfile(profile.name)
+      return await this.recordManualBackup(profile, String(options.reason ?? 'Manual backup').slice(0, 500))
+    } finally {
+      try { await unlink(lockPath) } catch {}
+    }
+  }
+
+  async restoreManualBackup(transaction, options = {}) {
+    const backupDir = resolve(String(transaction.backupDir ?? ''))
+    const backupsRoot = resolve(this.dataDir, 'backups')
+    if (!transaction.backupDir || !isWithin(backupsRoot, backupDir)) throw new Error('Transaction backup path is outside the Switchboard backup root')
+    let current = await this.readProfile(transaction.profile)
+    const lockPath = await this.acquireLock(current.dir, `${transaction.id}-restore`)
+    let recovery = null
+    try {
+      current = await this.readProfile(transaction.profile)
+      recovery = await this.recordManualBackup(current, `Automatic recovery point before restoring ${transaction.id}`)
+      const metadataFile = await readManagedFile(join(backupDir, 'backup.json'))
+      const metadata = JSON.parse(metadataFile.raw.toString('utf8'))
+      if (metadata.schema !== 'dsh-switchboard/backup/v1' || metadata.transactionId !== transaction.id || metadata.profile !== transaction.profile) {
+        throw new Error('Backup metadata does not match the selected transaction')
+      }
+      const manifest = await readManagedFile(join(backupDir, PROFILE_MANIFEST))
+      if (hash(manifest.raw) !== metadata.manifestHash) throw new Error('Backup manifest integrity check failed')
+      const patch = metadata.patchHash ? await readManagedFile(join(backupDir, PROFILE_PATCH), { maxBytes: 8 * 1024 * 1024 }) : null
+      if (patch && hash(patch.raw) !== metadata.patchHash) throw new Error('Backup patch integrity check failed')
+      await atomicWrite(current.manifestPath, manifest.raw, current.manifestMode, `${transaction.id}-manual-restore`)
+      if (patch) await atomicWrite(current.patchPath, patch.raw, 0o600, `${transaction.id}-manual-restore-patch`)
+      else {
+        const currentPatch = await optionalLstat(current.patchPath)
+        if (currentPatch?.isSymbolicLink() || (currentPatch && !currentPatch.isFile())) throw new Error(`Managed path must be a regular file, not a symlink: ${current.patchPath}`)
+        if (currentPatch) await unlink(current.patchPath)
+      }
+      const restored = await this.readProfile(transaction.profile)
+      let runtime = { ok: null, skipped: true }
+      if (options.validateRuntime !== false) {
+        runtime = await this.validateRuntime(transaction.profile)
+        if (!runtime.ok) throw new Error(`Restored profile failed DSH validation: ${runtime.diagnostic ?? 'dsh command was not found'}`)
+      }
+      return this.store.update(transaction.id, {
+        status: 'restored',
+        result: {
+          ...transaction.result,
+          restoredStateHash: restored.stateHash,
+          restoreRuntime: runtime,
+          restoredAt: new Date().toISOString(),
+          recoveryTransactionId: recovery.id,
+        },
+        error: null,
+      })
+    } catch (error) {
+      if (recovery?.backupDir) {
+        try {
+          const manifest = await readManagedFile(join(recovery.backupDir, PROFILE_MANIFEST))
+          await atomicWrite(current.manifestPath, manifest.raw, current.manifestMode, `${transaction.id}-manual-restore-reverse`)
+          const metadata = JSON.parse((await readManagedFile(join(recovery.backupDir, 'backup.json'))).raw.toString('utf8'))
+          const patch = metadata.patchHash ? await readManagedFile(join(recovery.backupDir, PROFILE_PATCH), { maxBytes: 8 * 1024 * 1024 }) : null
+          if (patch) await atomicWrite(current.patchPath, patch.raw, 0o600, `${transaction.id}-manual-restore-reverse-patch`)
+          else if (await optionalLstat(current.patchPath)) await unlink(current.patchPath)
+        } catch (recoveryError) {
+          error = new Error(`${error.message}; automatic recovery also failed: ${recoveryError.message}`)
+        }
+      }
+      this.store.update(transaction.id, { status: 'restore-failed', error: error.message })
+      throw error
+    } finally {
+      try { await unlink(lockPath) } catch {}
+    }
+  }
+
   async validateRuntime(profileName) {
     const result = await this.commandRunner({
       command: this.command,
@@ -434,6 +571,10 @@ export class DshAdapter {
   async rollback(transactionId, options = {}) {
     const transaction = this.store.get(transactionId)
     if (!transaction) throw new Error(`Unknown transaction: ${transactionId}`)
+    if (transaction.action === 'manual-backup') {
+      if (transaction.status !== 'available' && transaction.status !== 'restore-failed') throw new Error(`Manual backup cannot be restored from status ${transaction.status}`)
+      return this.restoreManualBackup(transaction, options)
+    }
     if (transaction.status !== 'applied' && transaction.status !== 'rollback-failed') throw new Error(`Transaction cannot be rolled back from status ${transaction.status}`)
     const backupDir = resolve(String(transaction.backupDir ?? ''))
     const backupsRoot = resolve(this.dataDir, 'backups')

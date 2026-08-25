@@ -4,6 +4,7 @@ export const ADAPTER_METHODS = Object.freeze([
   'readProfile',
   'planBundleChange',
   'apply',
+  'backup',
   'rollback',
   'healthCheck',
   'close',
@@ -15,4 +16,3 @@ export function assertAdapter(adapter) {
   if (missing.length) throw new TypeError(`adapter is missing methods: ${missing.join(', ')}`)
   return adapter
 }
-

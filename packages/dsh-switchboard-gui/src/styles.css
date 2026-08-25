@@ -369,7 +369,10 @@ code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; }
 .safety-grid strong { font-size: 10px; }
 .safety-grid span { color: #748096; font-size: 9px; }
 
-.backup-list { max-height: 480px; overflow: auto; padding: 8px 24px 22px; }
+.backup-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 18px 24px 8px; padding: 15px 16px; border: 1px solid #cfe0f5; border-radius: 9px; background: #f5f9ff; }
+.backup-toolbar strong { display: block; font-size: 12px; }
+.backup-toolbar p { margin: 6px 0 0; color: #68778d; font-size: 10px; line-height: 1.5; }
+.backup-list { max-height: 420px; overflow: auto; padding: 8px 24px 22px; }
 .backup-list article { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 16px 0; border-bottom: 1px solid #e1e8f1; }
 .backup-state { color: var(--success); font-size: 22px; }
 .backup-list strong { display: block; font-size: 12px; }

@@ -27,6 +27,13 @@ test("demo API supports bootstrap, plan, apply, activities, and reset-on-reload 
   const activities = await api("/api/activities?profile=toolbox-final&limit=20");
   assert.ok(activities.activities.some((activity) => activity.kind === "apply"));
 
+  const { transaction: backup } = await api("/api/profiles/toolbox-final/backups", { method: "POST", body: "{}" });
+  assert.equal(backup.status, "available");
+  const { transaction: restored } = await api(`/api/transactions/${backup.id}/rollback`, { method: "POST", body: "{}" });
+  assert.equal(restored.status, "restored");
+  const afterRestore = await api("/api/bootstrap?profile=toolbox-final");
+  assert.ok(afterRestore.transactions.some((transaction) => transaction.id.startsWith("demo-recovery-") && transaction.status === "available"));
+
   const freshApi = createDemoApi();
   const fresh = await freshApi("/api/bootstrap");
   assert.equal(fresh.selectedProfile.bundles.includes("@dsh-toolbox/context-switchboard"), true);

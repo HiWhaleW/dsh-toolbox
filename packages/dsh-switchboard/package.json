@@ -23,6 +23,9 @@
   "engines": {
     "node": "^22.19.0 || >=24.0.0"
   },
+  "dependencies": {
+    "cross-spawn": "7.0.6"
+  },
   "scripts": {
     "test": "node --test test/*.test.js"
   },

@@ -17,6 +17,7 @@ Usage:
   dsh-switchboard preflight PATH [--dsh-tools VERSION --cordis VERSION] [--node VERSION]
   dsh-switchboard report PROFILE [--audit] [--dsh-tools VERSION --cordis VERSION] [--node VERSION]
   dsh-switchboard history [--limit N]
+  dsh-switchboard backup PROFILE
   dsh-switchboard rollback TRANSACTION [--force] [--skip-runtime-validation]
 
 Mutating bundle commands print a plan by default. Add --apply only after reviewing it.
@@ -103,6 +104,9 @@ export async function runCli(argv, io = {}) {
       print(await adapter.writeProfileReport(args[0], { audit: Boolean(options.audit), target: targetFrom(options), outputDir: options.out }), stdout)
     } else if (command === 'history') {
       print(adapter.history({ limit: options.limit === undefined ? 20 : Number(options.limit) }), stdout)
+    } else if (command === 'backup') {
+      if (!args[0]) throw new Error('backup requires PROFILE')
+      print(await adapter.backup(args[0], { reason: 'CLI manual backup' }), stdout)
     } else if (command === 'rollback') {
       if (!args[0]) throw new Error('rollback requires a transaction id')
       print(await adapter.rollback(args[0], { force: Boolean(options.force), validateRuntime: !options['skip-runtime-validation'] }), stdout)
@@ -114,4 +118,3 @@ export async function runCli(argv, io = {}) {
 }
 
 export { HELP }
-
