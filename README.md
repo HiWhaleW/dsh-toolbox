@@ -77,6 +77,8 @@ The tested runtime combination is:
 | Cordis | `4.0.1` |
 | Node.js | `24.x` and the declared `22.19+` range |
 
+CI runs the full check and package dry-run matrix on Ubuntu with Node.js `22.19.0` and `24.x`. A separate `windows-latest` job verifies that Switchboard can detect and execute npm-installed `dsh.cmd` shims without enabling shell execution.
+
 Install the pinned DSH CLI if it is not already available:
 
 ```sh
@@ -133,6 +135,8 @@ The navigation opens four working views in the center panel:
 
 Recent activity remains visible on the right while you move between views. Long lists scroll inside their own panels, so the overall application frame stays fixed and readable.
 
+The local backup dialog also has an explicit **立即备份** action. These manual Profile snapshots can be restored later; before restoring one, Switchboard first saves the current Profile as a new recovery point, then restores the selected snapshot and runs DSH configuration validation. If validation fails, it attempts to return to that recovery point automatically.
+
 From the repository checkout:
 
 ```sh
@@ -151,7 +155,10 @@ npm run switchboard -- detect
 npm run switchboard -- profiles
 npm run switchboard -- inspect toolbox
 npm run switchboard -- health toolbox
+npm run switchboard -- backup toolbox
 ```
+
+The `backup` command immediately saves a restorable snapshot of the current Profile in Switchboard's private local data directory. Restoring a manual snapshot creates a fresh recovery point first and validates the restored Profile with DSH.
 
 Mutation commands are plan-first and make no change unless `--apply` is present:
 
