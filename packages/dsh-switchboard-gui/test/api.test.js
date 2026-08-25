@@ -95,6 +95,24 @@ test("GUI API keeps bundle changes plan-first, validates apply, and supports saf
   assert.deepEqual(JSON.parse(await readFile(join(setup.profileDir, "package.json"), "utf8")).dsh.profile.bundles, [BASE]);
 });
 
+test("GUI API creates and restores a manual Profile backup", async (t) => {
+  const setup = await fixture(t);
+  const created = await json(await post(setup.origin, "/api/profiles/toolbox/backups", {}));
+  assert.equal(created.response.status, 201);
+  assert.equal(created.body.transaction.action, "manual-backup");
+  assert.equal(created.body.transaction.status, "available");
+
+  const manifestPath = join(setup.profileDir, "package.json");
+  const changed = JSON.parse(await readFile(manifestPath, "utf8"));
+  changed.description = "changed after backup";
+  await writeFile(manifestPath, JSON.stringify(changed, null, 2) + "\n");
+
+  const restored = await json(await post(setup.origin, `/api/transactions/${created.body.transaction.id}/rollback`, { validateRuntime: true }));
+  assert.equal(restored.response.status, 200);
+  assert.equal(restored.body.transaction.status, "restored");
+  assert.doesNotMatch(await readFile(manifestPath, "utf8"), /changed after backup/);
+});
+
 test("GUI API refuses cross-site writes and does not expose profile manifest contents", async (t) => {
   const setup = await fixture(t);
   const crossSite = await fetch(`${setup.origin}/api/profiles/toolbox/health`, {

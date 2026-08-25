@@ -126,6 +126,23 @@ export function createDemoApi() {
       return { health: { ok: true, runtime: { diagnostic: "在线演示：配置验证通过。" } } };
     }
 
+    const backupMatch = requestUrl.pathname.match(/^\/api\/profiles\/([^/]+)\/backups$/);
+    if (method === "POST" && backupMatch) {
+      const profile = decodeURIComponent(backupMatch[1]);
+      const transaction = {
+        id: `demo-backup-${counter++}`,
+        profile,
+        action: "manual-backup",
+        status: "available",
+        backupAvailable: true,
+        changes: { additions: [], removals: [], moved: [] },
+        updatedAt: new Date().toISOString(),
+      };
+      transactions = [transaction, ...transactions];
+      addActivity({ profile, kind: "backup", status: "success", title: "Profile 手动备份已创建", detail: "在线演示已在浏览器内存中模拟保存快照。" });
+      return { transaction };
+    }
+
     const planMatch = requestUrl.pathname.match(/^\/api\/profiles\/([^/]+)\/plans$/);
     if (method === "POST" && planMatch) {
       const profile = decodeURIComponent(planMatch[1]);
@@ -170,8 +187,20 @@ export function createDemoApi() {
     const rollbackMatch = requestUrl.pathname.match(/^\/api\/transactions\/([^/]+)\/rollback$/);
     if (method === "POST" && rollbackMatch) {
       const id = decodeURIComponent(rollbackMatch[1]);
-      transactions = transactions.map((transaction) => transaction.id === id ? { ...transaction, status: "rolled-back" } : transaction);
-      addActivity({ profile: "toolbox-final", kind: "rollback", status: "success", title: "Profile 已安全回滚", detail: "在线演示已模拟备份恢复与验证。" });
+      const target = transactions.find((transaction) => transaction.id === id);
+      if (target?.action === "manual-backup") {
+        transactions = [{
+          id: `demo-recovery-${counter++}`,
+          profile: target.profile,
+          action: "manual-backup",
+          status: "available",
+          backupAvailable: true,
+          changes: { additions: [], removals: [], moved: [] },
+          updatedAt: new Date().toISOString(),
+        }, ...transactions];
+      }
+      transactions = transactions.map((transaction) => transaction.id === id ? { ...transaction, status: transaction.action === "manual-backup" ? "restored" : "rolled-back" } : transaction);
+      addActivity({ profile: target?.profile ?? "toolbox-final", kind: "rollback", status: "success", title: target?.action === "manual-backup" ? "Profile 手动备份已恢复" : "Profile 已安全回滚", detail: "在线演示已模拟备份恢复与验证。" });
       return { transaction: transactions.find((transaction) => transaction.id === id) };
     }
 

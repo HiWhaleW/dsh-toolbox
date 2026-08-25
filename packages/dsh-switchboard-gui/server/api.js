@@ -307,6 +307,15 @@ export function createSwitchboardApi(config = {}) {
         return true;
       }
 
+      match = url.pathname.match(/^\/api\/profiles\/([^/]+)\/backups$/);
+      if (match) {
+        const profileName = assertProfileName(decodeURIComponent(match[1]));
+        const transaction = await adapter.backup(profileName, { reason: "DSH Switchboard GUI manual backup" });
+        addEvent({ profile: profileName, kind: "backup", status: "success", title: "Profile 手动备份已创建", detail: "当前 Profile 快照已保存到 Switchboard 私有本地数据目录。" });
+        writeJson(response, 201, { transaction: publicTransaction(transaction) });
+        return true;
+      }
+
       match = url.pathname.match(/^\/api\/profiles\/([^/]+)\/plans$/);
       if (match) {
         const profileName = assertProfileName(decodeURIComponent(match[1]));
@@ -334,8 +343,10 @@ export function createSwitchboardApi(config = {}) {
       match = url.pathname.match(/^\/api\/transactions\/([^/]+)\/rollback$/);
       if (match) {
         const transactionId = decodeURIComponent(match[1]);
+        const before = adapter.history({ limit: 200 }).transactions.find((item) => item.id === transactionId);
         const transaction = await adapter.rollback(transactionId, { force: false, validateRuntime: body.validateRuntime !== false });
-        addEvent({ profile: transaction.profile, kind: "rollback", status: "success", title: "Profile 已回滚", detail: "备份已恢复并通过 DSH 运行时验证。" });
+        const manual = before?.action === "manual-backup";
+        addEvent({ profile: transaction.profile, kind: "rollback", status: "success", title: manual ? "Profile 手动备份已恢复" : "Profile 已回滚", detail: manual ? "恢复前已自动保存恢复点，所选快照已恢复并通过 DSH 运行时验证。" : "备份已恢复并通过 DSH 运行时验证。" });
         writeJson(response, 200, { transaction: publicTransaction(transaction) });
         return true;
       }

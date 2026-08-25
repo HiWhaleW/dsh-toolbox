@@ -51,8 +51,11 @@ Rollback refuses to overwrite unrelated changes made after a transaction:
 
 ```sh
 node packages/dsh-switchboard/bin/dsh-switchboard.js history
+node packages/dsh-switchboard/bin/dsh-switchboard.js backup toolbox
 node packages/dsh-switchboard/bin/dsh-switchboard.js rollback TRANSACTION_ID
 ```
+
+Manual backups are explicit restorable Profile snapshots. Restoring one first creates a new recovery point for the current state, then validates the restored Profile with DSH.
 
 ## Preflight, compatibility, and reports
 

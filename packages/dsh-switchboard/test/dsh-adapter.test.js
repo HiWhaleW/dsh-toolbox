@@ -102,6 +102,24 @@ test('plans, atomically applies, records, validates, and rolls back a bundle cha
   assert.deepEqual((await setup.adapter.readProfile('toolbox')).bundles, [BASE])
 })
 
+test('creates a manual backup and preserves a recovery point when restoring it', async t => {
+  const setup = await fixture()
+  t.after(() => setup.adapter.close())
+  const backup = await setup.adapter.backup('toolbox')
+  assert.equal(backup.action, 'manual-backup')
+  assert.equal(backup.status, 'available')
+  assert.match(await readFile(join(backup.backupDir, 'package.json'), 'utf8'), /dsh-profile-toolbox/)
+
+  const changed = { ...setup.manifest, description: 'restore me later' }
+  await writeFile(join(setup.profileDir, 'package.json'), JSON.stringify(changed, null, 2) + '\n')
+  const restored = await setup.adapter.rollback(backup.id)
+  assert.equal(restored.status, 'restored')
+  assert.doesNotMatch(await readFile(join(setup.profileDir, 'package.json'), 'utf8'), /restore me later/)
+  const recovery = setup.adapter.history().transactions.find(transaction => transaction.id === restored.result.recoveryTransactionId)
+  assert.equal(recovery.status, 'available')
+  assert.match(await readFile(join(recovery.backupDir, 'package.json'), 'utf8'), /restore me later/)
+})
+
 test('rejects a stale plan without writing a transaction', async t => {
   const setup = await fixture()
   t.after(() => setup.adapter.close())

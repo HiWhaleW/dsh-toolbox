@@ -26,3 +26,16 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: npm run check
       - run: npm run pack:check
+  windows-command-runner:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: node --test packages/dsh-switchboard/test/windows-command-runner.test.js

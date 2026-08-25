@@ -13,6 +13,8 @@ It turns the safety workflow of `@dsh-toolbox/dsh-switchboard` into a visual flo
 5. apply the plan only after review, create a backup, and validate with DSH;
 6. restore a prior backup if the result is not what you wanted.
 
+The backup dialog also provides an explicit **Back up now** action. Manual snapshots are restorable, and Switchboard creates a fresh recovery point before restoring one.
+
 The GUI runs outside the active DSH process so it never rewrites the Profile that booted it. It has no account, cloud database, analytics, telemetry, or background registry access.
 
 ## Start

@@ -17,6 +17,7 @@ const navItems = [
 ];
 
 const activityKinds = {
+  backup: "备份",
   health: "验证",
   plan: "计划",
   apply: "应用",
@@ -273,6 +274,20 @@ export function App() {
     }
   }
 
+  async function createBackup() {
+    if (!profile) return;
+    setBusy("backup");
+    try {
+      await api(`/api/profiles/${encodeURIComponent(profile.name)}/backups`, { method: "POST", body: "{}" });
+      setToast({ kind: "success", message: demoMode ? "在线演示：已在浏览器内存中创建手动备份" : "当前 Profile 的手动备份已保存" });
+      await load(profile.name);
+    } catch (backupError) {
+      setToast({ kind: "error", message: backupError.message });
+    } finally {
+      setBusy("");
+    }
+  }
+
   async function generateReport() {
     if (!profile) return;
     setBusy("report");
@@ -307,7 +322,7 @@ export function App() {
 
   const profileHeader = (
     <header className="profile-header">
-      <button className="back-link" onClick={() => setProfilesOpen(true)}>{icon("bi-chevron-left")} 所有 Profile</button>
+      <button className="back-link" onClick={() => setProfilesOpen(true)}>{icon("bi-folder2-open")} 切换 Profile</button>
       <div className="profile-title-row"><h1>{profile?.name}</h1><span className="profile-pill">当前 Profile</span></div>
       <p>DSH Profile · 路径：<code>$DSH_HOME/profiles/{profile?.name}</code></p>
     </header>
@@ -390,7 +405,7 @@ export function App() {
 
   const activityView = (
     <div className="view-stack" data-view="activity">
-      <header className="section-page-header"><div className="section-title-row"><div><h1>活动中心</h1><p>SQLite 中保存的本地操作记录，可按 Profile、类型和状态筛选。</p></div><span className="activity-total">{activityPage.total} 条记录</span></div></header>
+      <header className="section-page-header"><button className="back-link" onClick={() => navigate("profiles")}>{icon("bi-chevron-left")} DSH Profiles</button><div className="section-title-row"><div><h1>活动中心</h1><p>SQLite 中保存的本地操作记录，可按 Profile、类型和状态筛选。</p></div><span className="activity-total">{activityPage.total} 条记录</span></div></header>
       <section className="activity-center-panel">
         <div className="activity-toolbar">
           <label>Profile<select value={activityFilters.profile} onChange={(event) => setActivityFilters((current) => ({ ...current, profile: event.target.value }))}><option value="">全部 Profile</option>{(data?.profiles ?? []).map((item) => <option key={item.name} value={item.name}>{item.name}</option>)}</select></label>
@@ -408,7 +423,7 @@ export function App() {
 
   const settingsView = (
     <div className="view-stack" data-view="settings">
-      <header className="section-page-header"><div className="section-title-row"><div><h1>设置</h1><p>本机 DSH 运行环境、数据位置与隐私边界。</p></div><span className="local-badge"><span className="status-dot success" />本地优先</span></div></header>
+      <header className="section-page-header"><button className="back-link" onClick={() => navigate("profiles")}>{icon("bi-chevron-left")} DSH Profiles</button><div className="section-title-row"><div><h1>设置</h1><p>本机 DSH 运行环境、数据位置与隐私边界。</p></div><span className="local-badge"><span className="status-dot success" />本地优先</span></div></header>
       <section className="settings-panel">
         <div className="setting-row"><span className="setting-icon">{icon("bi-folder2-open")}</span><div><strong>DSH_HOME</strong><p>Profile 的读取来源</p><code>{data?.dshHome ?? "—"}</code></div></div>
         <div className="setting-row"><span className="setting-icon">{icon("bi-database")}</span><div><strong>Switchboard 数据目录</strong><p>SQLite、备份和报告的私有本地目录</p><code>{data?.dataDir ?? "—"}</code></div></div>
@@ -447,9 +462,9 @@ export function App() {
 
       {planOpen && plan && <Modal wide title="审阅 Bundle 变更" subtitle={`只会影响本地 DSH Profile “${plan.profile}”`} iconName="bi-shield-check" onClose={() => setPlanOpen(false)}><div className="plan-body"><div className="plan-notice">{icon("bi-info-circle")} 当前只是计划，尚未修改任何 Profile 文件。</div><div className="change-columns"><section><span>当前 Bundle</span>{plan.previousBundles.map((name) => <code key={name}>{name}</code>)}</section><span className="change-arrow">{icon("bi-arrow-right")}</span><section><span>变更后</span>{plan.nextBundles.map((name) => <code key={name}>{name}</code>)}</section></div><div className="change-summary">{plan.changes.additions.map((name) => <p key={`add-${name}`} className="addition">{icon("bi-plus-circle")} 启用 {name}</p>)}{plan.changes.removals.map((name) => <p key={`remove-${name}`} className="removal">{icon("bi-dash-circle")} 停用 {name}</p>)}{plan.changes.additions.length + plan.changes.removals.length === 0 && plan.changes.moved.map((name) => <p key={`move-${name}`}>{icon("bi-arrow-down-up")} 调整 {name} 的加载顺序</p>)}</div>{plan.warnings?.length > 0 && <div className="plan-warnings">{plan.warnings.map((warning) => <p key={warning}>{icon("bi-exclamation-triangle")} {warning}</p>)}</div>}<div className="safety-grid"><div>{icon("bi-archive")}<strong>先创建本地备份</strong><span>原始 Profile 可恢复</span></div><div>{icon("bi-fingerprint")}<strong>拒绝过期计划</strong><span>状态变化后不会误写</span></div><div>{icon("bi-arrow-counterclockwise")}<strong>验证失败自动恢复</strong><span>真实运行 DSH 校验</span></div></div></div><footer className="modal-actions"><button className="secondary-button" onClick={() => setPlanOpen(false)}>稍后处理</button><button className="primary-button" onClick={applyPlan} disabled={busy === "apply"}>{busy === "apply" ? <span className="mini-spinner" /> : icon("bi-shield-check")} 应用并验证</button></footer></Modal>}
 
-      {backupsOpen && !rollbackTarget && <Modal wide title="Profile 备份与回滚" subtitle="备份保存在 Switchboard 私有本地数据目录" iconName="bi-archive" onClose={() => { setBackupsOpen(false); setRollbackTarget(null); }}><div className="backup-list">{transactions.filter((transaction) => transaction.backupAvailable).length ? transactions.filter((transaction) => transaction.backupAvailable).map((transaction) => <article key={transaction.id}><span className={`backup-state ${transaction.status}`}>{icon(transaction.status === "applied" ? "bi-check-circle" : "bi-arrow-counterclockwise")}</span><div><strong>{transaction.status === "applied" ? "可恢复的 Profile 备份" : "已回滚的事务"}</strong><code>{transaction.id}</code><p>{transaction.changes.additions.length} 项启用 · {transaction.changes.removals.length} 项停用 · {formatTime(transaction.updatedAt)}</p></div>{transaction.status === "applied" && <button className="secondary-button danger-button" onClick={() => setRollbackTarget(transaction)}>回滚</button>}</article>) : <div className="modal-empty">{icon("bi-archive")}<h3>还没有备份</h3><p>第一次成功应用 Bundle 变更时会自动创建。</p></div>}</div></Modal>}
+      {backupsOpen && !rollbackTarget && <Modal wide title="Profile 备份与回滚" subtitle="备份保存在 Switchboard 私有本地数据目录" iconName="bi-archive" onClose={() => { setBackupsOpen(false); setRollbackTarget(null); }}><div className="backup-toolbar"><div><strong>主动保存当前 Profile</strong><p>手动快照可在以后恢复；恢复前还会自动保存当时的状态。</p></div><button className="primary-button" onClick={createBackup} disabled={busy === "backup"}>{busy === "backup" ? <span className="mini-spinner" /> : icon("bi-download")} 立即备份</button></div><div className="backup-list">{transactions.filter((transaction) => transaction.backupAvailable).length ? transactions.filter((transaction) => transaction.backupAvailable).map((transaction) => { const manual = transaction.action === "manual-backup"; const restorable = manual ? ["available", "restore-failed"].includes(transaction.status) : transaction.status === "applied"; return <article key={transaction.id}><span className={`backup-state ${transaction.status}`}>{icon(restorable ? "bi-check-circle" : "bi-arrow-counterclockwise")}</span><div><strong>{manual ? transaction.status === "restored" ? "已恢复的手动备份" : "手动 Profile 备份" : transaction.status === "applied" ? "Bundle 变更前备份" : "已回滚的事务"}</strong><code>{transaction.id}</code><p>{manual ? `完整 Profile 快照 · ${formatTime(transaction.updatedAt)}` : `${transaction.changes.additions.length} 项启用 · ${transaction.changes.removals.length} 项停用 · ${formatTime(transaction.updatedAt)}`}</p></div>{restorable && <button className="secondary-button danger-button" onClick={() => setRollbackTarget(transaction)}>{manual ? "恢复" : "回滚"}</button>}</article>; }) : <div className="modal-empty">{icon("bi-archive")}<h3>还没有备份</h3><p>点击“立即备份”，或在应用 Bundle 变更时自动创建。</p></div>}</div></Modal>}
 
-      {rollbackTarget && <Modal title="确认回滚 Profile？" subtitle="此操作会先检查 Profile 是否在事务后被其他程序修改" iconName="bi-arrow-counterclockwise" onClose={() => setRollbackTarget(null)}><div className="confirm-body"><p>将恢复事务 <code>{rollbackTarget.id}</code> 对应的本地备份，并再次运行 DSH 配置验证。</p><div className="confirm-warning">{icon("bi-exclamation-triangle")} 如果检测到后续人工修改，Switchboard 会拒绝覆盖。</div></div><footer className="modal-actions"><button className="secondary-button" onClick={() => setRollbackTarget(null)}>取消</button><button className="primary-button danger-primary" onClick={rollback} disabled={busy === "rollback"}>{busy === "rollback" ? <span className="mini-spinner" /> : icon("bi-arrow-counterclockwise")} 安全回滚</button></footer></Modal>}
+      {rollbackTarget && <Modal title={rollbackTarget.action === "manual-backup" ? "确认恢复手动备份？" : "确认回滚 Profile？"} subtitle={rollbackTarget.action === "manual-backup" ? "恢复前会先自动备份当前 Profile" : "此操作会先检查 Profile 是否在事务后被其他程序修改"} iconName="bi-arrow-counterclockwise" onClose={() => setRollbackTarget(null)}><div className="confirm-body"><p>将恢复事务 <code>{rollbackTarget.id}</code> 对应的本地备份，并再次运行 DSH 配置验证。</p><div className="confirm-warning">{icon("bi-exclamation-triangle")} {rollbackTarget.action === "manual-backup" ? "当前状态会先保存为新的恢复点；若验证失败，Switchboard 会自动撤销本次恢复。" : "如果检测到后续人工修改，Switchboard 会拒绝覆盖。"}</div></div><footer className="modal-actions"><button className="secondary-button" onClick={() => setRollbackTarget(null)}>取消</button><button className="primary-button danger-primary" onClick={rollback} disabled={busy === "rollback"}>{busy === "rollback" ? <span className="mini-spinner" /> : icon("bi-arrow-counterclockwise")} {rollbackTarget.action === "manual-backup" ? "安全恢复" : "安全回滚"}</button></footer></Modal>}
 
       {profilesOpen && <Modal title="选择 DSH Profile" subtitle={`从 ${data?.dshHome ?? "$DSH_HOME"}/profiles 发现的本地配置`} iconName="bi-file-earmark-code" onClose={() => setProfilesOpen(false)}><div className="profile-picker">{(data?.profiles ?? []).map((item) => <button key={item.name} className={item.name === profile?.name ? "selected" : ""} onClick={async () => { setProfilesOpen(false); await load(item.name); }}><span className="profile-picker-icon">{icon(item.error ? "bi-exclamation-triangle" : "bi-folder2-open")}</span><span><strong>{item.name}</strong><small>{item.error ? item.error : `${item.bundles} 个 Bundle · ${item.dependencies} 个依赖`}</small></span>{item.name === profile?.name ? <span className="current-mark">当前</span> : icon("bi-chevron-right")}</button>)}</div></Modal>}
 
