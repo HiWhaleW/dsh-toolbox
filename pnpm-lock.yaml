@@ -49,15 +49,15 @@ importers:
         specifier: 19.2.0
         version: 19.2.0
       react-dom:
-        specifier: 19.2.0
-        version: 19.2.0(react@19.2.0)
+        specifier: 19.2.8
+        version: 19.2.8(react@19.2.0)
       vite:
         specifier: 8.2.2
         version: 8.2.2(@types/node@26.2.0)(yaml@2.9.0)
     devDependencies:
       '@deepseek-ai/dsh':
         specifier: 0.1.1-rc.2
-        version: 0.1.1-rc.2(b26df07e9fff6469a9fe81e5250c6ff1)
+        version: 0.1.1-rc.2(f3e93754f46076f91359065576e65a12)
 
   packages/plugin-preflight:
     dependencies:
@@ -3438,10 +3438,10 @@ packages:
     resolution: {integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==}
     engines: {node: '>= 0.10'}
 
-  react-dom@19.2.0:
-    resolution: {integrity: sha512-UlbRu4cAiGaIewkPyiRGJk0imDN2T3JjieT6spoL2UeSf5od4n5LB/mQ4ejmxhCFT1tYe8IvaFulzynWovsEFQ==}
+  react-dom@19.2.8:
+    resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
-      react: ^19.2.0
+      react: ^19.2.8
 
   react@19.2.0:
     resolution: {integrity: sha512-tmbWg6W31tQLeB5cdIBOicJDJRR2KzXsV7uSK9iNfLWQ5bIZfxuPEHp7M8wiHyHnn0DD1i7w3Zmin0FtkrwoCQ==}
@@ -4644,7 +4644,7 @@ snapshots:
       '@deepseek-ai/dsh-invariants': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)
       clsx: 2.1.1
 
-  '@deepseek-ai/dsh-client-ui-trajectory@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-agent@0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85))(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-compaction@0.1.1-rc.2(80d45efbb3b7de81b65c253ede5096fd))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-tools@0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@deepseek-ai/dsh-client-ui-trajectory@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-agent@0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85))(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-compaction@0.1.1-rc.2(80d45efbb3b7de81b65c253ede5096fd))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-tools@0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3))(react-dom@19.2.8(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@deepseek-ai/cordis': 4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)
       '@deepseek-ai/dsh-agent': 0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85)
@@ -4654,7 +4654,7 @@ snapshots:
       '@deepseek-ai/dsh-compaction': 0.1.1-rc.2(80d45efbb3b7de81b65c253ede5096fd)
       '@deepseek-ai/dsh-invariants': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)
       '@deepseek-ai/dsh-tools': 0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3)
-      '@tanstack/react-virtual': 3.14.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@tanstack/react-virtual': 3.14.9(react-dom@19.2.8(react@19.2.0))(react@19.2.0)
       diff: 9.0.0
     transitivePeerDependencies:
       - react
@@ -5946,7 +5946,7 @@ snapshots:
       '@deepseek-ai/dsh-invariants': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)
       '@deepseek-ai/dsh-llm': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-attachment@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-brand@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-brand@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-timeout@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))
 
-  '@deepseek-ai/dsh-web-app@0.1.1-rc.2(a333927415b649b7f68f9b93224c0b77)':
+  '@deepseek-ai/dsh-web-app@0.1.1-rc.2(7620048bcb74048a6e970b0317bca9bc)':
     dependencies:
       '@deepseek-ai/cordis': 4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)
       '@deepseek-ai/cordis-plugin-loader': 1.0.2(@deepseek-ai/cordis@4.0.1)(node-addon-require-builtin@0.1.4)
@@ -5987,7 +5987,7 @@ snapshots:
       '@deepseek-ai/dsh-client-ui-subagent': 0.1.1-rc.2(682871afb0bf83a0f2396b3d56004c91)
       '@deepseek-ai/dsh-client-ui-theme': 0.1.1-rc.2(e4783b4de879217863f2882de98b3d74)
       '@deepseek-ai/dsh-client-ui-tool': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-api-remotes@0.1.1-rc.2(0037c360ed8ef45e74e856e82932995e))(@deepseek-ai/dsh-client-connection@0.1.1-rc.2)(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))
-      '@deepseek-ai/dsh-client-ui-trajectory': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-agent@0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85))(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-compaction@0.1.1-rc.2(80d45efbb3b7de81b65c253ede5096fd))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-tools@0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@deepseek-ai/dsh-client-ui-trajectory': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-agent@0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85))(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-compaction@0.1.1-rc.2(80d45efbb3b7de81b65c253ede5096fd))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-tools@0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3))(react-dom@19.2.8(react@19.2.0))(react@19.2.0)
       '@deepseek-ai/dsh-client-ui-user-questions': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-api-remotes@0.1.1-rc.2(0037c360ed8ef45e74e856e82932995e))(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))
       '@deepseek-ai/dsh-client-ui-workflow-run': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-session@0.1.1-rc.2(a4e4bb24a1f3580ac25e11cfa3c6b8cc))(@deepseek-ai/dsh-tool-workflow@0.1.1-rc.2(910301586bd16051b44e5fe8055952d4))(@deepseek-ai/dsh-workflow@0.1.1-rc.2(be2dac4e15e11ce84de4558727259db8))
       '@deepseek-ai/dsh-client-ui-workspace': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-client-connection@0.1.1-rc.2)(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-conversation@0.1.1-rc.2(80ae223ac5fba15669f7553b0592fd8a))(@deepseek-ai/dsh-client-ui-sidebar@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-client-locale@0.1.1-rc.2(f25dee28aeb2196ff9cc85fd07c415cf))(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-layout@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-client-runtime@0.1.1-rc.2(afd7b845aa76c2cd56e138e9a32ab4f5))(@deepseek-ai/dsh-client-ui-theme@0.1.1-rc.2(e4783b4de879217863f2882de98b3d74))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))
@@ -6120,7 +6120,7 @@ snapshots:
       '@deepseek-ai/dsh-storage-domain': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-storage@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)))
       zod: 4.4.3
 
-  '@deepseek-ai/dsh@0.1.1-rc.2(b26df07e9fff6469a9fe81e5250c6ff1)':
+  '@deepseek-ai/dsh@0.1.1-rc.2(f3e93754f46076f91359065576e65a12)':
     dependencies:
       '@deepseek-ai/cordis': 4.0.1(@deepseek-ai/cordis-plugin-include@1.0.6)(@deepseek-ai/cordis-plugin-loader@1.0.2)
       '@deepseek-ai/cordis-plugin-hmr': 1.0.16(@deepseek-ai/cordis-plugin-timer@1.1.3(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/cordis@4.0.1)
@@ -6179,7 +6179,7 @@ snapshots:
       '@deepseek-ai/dsh-tool-todo': 0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-agent@0.1.1-rc.2(c1537a8836b04097f168b024f1e38d85))(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-session-projection@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1)(@deepseek-ai/dsh-invariants@0.1.1-rc.2(@deepseek-ai/cordis@4.0.1))(@deepseek-ai/dsh-session@0.1.1-rc.2(a4e4bb24a1f3580ac25e11cfa3c6b8cc)))(@deepseek-ai/dsh-session@0.1.1-rc.2(a4e4bb24a1f3580ac25e11cfa3c6b8cc))(@deepseek-ai/dsh-tools@0.1.1-rc.2(119bc70f73f8eddebfaa6b47561adeb3))
       '@deepseek-ai/dsh-tool-web': 0.1.1-rc.2(1c5a0234715166d758e366fe9c921b2f)
       '@deepseek-ai/dsh-tool-workflow': 0.1.1-rc.2(910301586bd16051b44e5fe8055952d4)
-      '@deepseek-ai/dsh-web-app': 0.1.1-rc.2(a333927415b649b7f68f9b93224c0b77)
+      '@deepseek-ai/dsh-web-app': 0.1.1-rc.2(7620048bcb74048a6e970b0317bca9bc)
       '@deepseek-ai/dsh-workflow-worker-thread': 0.1.1-rc.2(7ff539779842715217130c18ca64c09c)
       commander: 15.0.0
       js-yaml: 4.3.1
@@ -6709,11 +6709,11 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@tanstack/react-virtual@3.14.9(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@tanstack/react-virtual@3.14.9(react-dom@19.2.8(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@tanstack/virtual-core': 3.17.7
       react: 19.2.0
-      react-dom: 19.2.0(react@19.2.0)
+      react-dom: 19.2.8(react@19.2.0)
 
   '@tanstack/virtual-core@3.17.7': {}
 
@@ -7384,7 +7384,7 @@ snapshots:
       iconv-lite: 0.7.3
       unpipe: 1.0.0
 
-  react-dom@19.2.0(react@19.2.0):
+  react-dom@19.2.8(react@19.2.0):
     dependencies:
       react: 19.2.0
       scheduler: 0.27.0
