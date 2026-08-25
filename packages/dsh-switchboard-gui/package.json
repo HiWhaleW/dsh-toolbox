@@ -18,8 +18,8 @@
     "@vitejs/plugin-react": "6.1.0",
     "bootstrap-icons": "1.13.1",
     "vite": "8.2.2",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "peerDependencies": {
     "@deepseek-ai/dsh": "0.1.1-rc.2"
