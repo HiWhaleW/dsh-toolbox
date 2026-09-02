@@ -9,6 +9,10 @@
   "license": "SEE LICENSE IN LICENSE",
   "engines": { "node": "^22.19.0 || >=24.0.0" },
   "peerDependencies": { "@deepseek-ai/dsh-tools": "0.1.1-rc.2", "@deepseek-ai/cordis": "^4.0.1" },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-tools": { "optional": true },
+    "@deepseek-ai/cordis": { "optional": true }
+  },
   "devDependencies": { "@deepseek-ai/dsh-tools": "0.1.1-rc.2" },
   "dsh": { "bundle": { "patch": "./cordis.patch.yml" } },
   "repository": { "type": "git", "url": "git+https://github.com/HiWhaleW/dsh-toolbox.git", "directory": "packages/plugin-preflight" },

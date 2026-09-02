@@ -26,6 +26,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: npm run check
       - run: npm run pack:check
+      - run: npm run smoke:cold-install
   windows-command-runner:
     runs-on: windows-latest
     steps:

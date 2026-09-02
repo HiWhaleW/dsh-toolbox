@@ -12,13 +12,17 @@ const args = process.argv.slice(2);
 
 function option(name, fallback) {
   const index = args.indexOf(`--${name}`);
-  return index === -1 ? fallback : args[index + 1];
+  if (index === -1) return fallback;
+  const value = args[index + 1];
+  if (!value || value.startsWith("--")) throw new Error(`--${name} requires a value`);
+  return value;
 }
 
 const host = option("host", "127.0.0.1");
 const port = Number(option("port", "4173"));
+const explicitPort = args.includes("--port");
 if (!["127.0.0.1", "localhost", "::1"].includes(host)) throw new Error("DSH Switchboard GUI only binds to a loopback host");
-if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error("--port must be between 1 and 65535");
+if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error("--port must be between 0 and 65535");
 if (!existsSync(indexPath)) throw new Error("GUI build is missing. Run `npm run build` before starting the local server.");
 
 const types = {
@@ -68,9 +72,30 @@ const server = createServer((request, response) => {
   else createReadStream(file).pipe(response);
 });
 
-server.listen(port, host, () => {
-  process.stdout.write(`DSH Switchboard GUI: http://${host}:${port}\n`);
+function listening() {
+  const address = server.address();
+  const activePort = typeof address === "object" && address ? address.port : port;
+  process.stdout.write(`DSH Switchboard GUI: http://${host}:${activePort}\n`);
+}
+
+let fallbackAttempted = false;
+server.on("error", error => {
+  if (error.code === "EADDRINUSE" && !explicitPort && port === 4173 && !fallbackAttempted) {
+    fallbackAttempted = true;
+    process.stderr.write("DSH Switchboard GUI: port 4173 is busy; selecting an available local port.\n");
+    server.listen(0, host);
+    return;
+  }
+  const detail = error.code === "EADDRINUSE"
+    ? `port ${port} is already in use; choose another with --port <number>`
+    : error.message;
+  process.stderr.write(`DSH Switchboard GUI: ${detail}\n`);
+  api.close();
+  process.exitCode = 1;
 });
+
+server.on("listening", listening);
+server.listen(port, host);
 
 function close() {
   api.close();

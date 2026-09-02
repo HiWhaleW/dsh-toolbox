@@ -1,6 +1,6 @@
 {
   "name": "@dsh-toolbox/dsh-switchboard",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "description": "Local DSH profile and plugin control plane with adapters, change plans, preflight, compatibility checks, backups, and rollback.",
   "type": "module",
   "main": "./index.js",

@@ -26,7 +26,7 @@ pnpm install --frozen-lockfile
 pnpm switchboard:gui
 ```
 
-Open `http://127.0.0.1:4173/`. The standalone server rejects non-loopback hosts. Use `DSH_HOME` to select a different Harness home and `DSH_SWITCHBOARD_DATA_DIR` to select a different local backup/receipt directory.
+Open the local URL printed in the terminal. It normally uses `http://127.0.0.1:4173/`; if that default port is busy, Switchboard automatically selects an available loopback port and prints the actual URL. Pass `--port <number>` when you need a fixed port. The standalone server rejects non-loopback hosts. Use `DSH_HOME` to select a different Harness home and `DSH_SWITCHBOARD_DATA_DIR` to select a different local backup/receipt directory.
 
 ## Privacy and safety
 

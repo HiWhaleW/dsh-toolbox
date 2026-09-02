@@ -88,7 +88,7 @@ dsh --version
 
 ## Five-minute installation
 
-Clone the source, create the four npm tarballs, and install them into one DSH profile:
+Clone the source, create the four npm tarballs, and install them into the interactive DSH Web profile:
 
 ```sh
 git clone https://github.com/HiWhaleW/dsh-toolbox.git
@@ -100,21 +100,24 @@ npm pack --workspace @dsh-toolbox/context-switchboard --pack-destination dist
 npm pack --workspace @dsh-toolbox/plugin-preflight --pack-destination dist
 npm pack --workspace @dsh-toolbox/compatibility-radar --pack-destination dist
 
-dsh plugin --profile toolbox add ./dist/dsh-toolbox-product-research-workbench-0.2.1.tgz
-dsh plugin --profile toolbox add ./dist/dsh-toolbox-context-switchboard-0.2.1.tgz
-dsh plugin --profile toolbox add ./dist/dsh-toolbox-plugin-preflight-0.2.1.tgz
-dsh plugin --profile toolbox add ./dist/dsh-toolbox-compatibility-radar-0.2.1.tgz
+dsh plugin --profile web add \
+  ./dist/dsh-toolbox-product-research-workbench-0.2.1.tgz \
+  ./dist/dsh-toolbox-context-switchboard-0.2.1.tgz \
+  ./dist/dsh-toolbox-plugin-preflight-0.2.1.tgz \
+  ./dist/dsh-toolbox-compatibility-radar-0.2.1.tgz
 
-dsh --profile toolbox --dump-config
+dsh --profile web --dump-config
 ```
 
-The final command should show all four bundle layers. Start DSH with the same profile:
+The final command should show all four bundle layers. Start the browser UI with the same profile:
 
 ```sh
-dsh --profile toolbox
+dsh --profile web
 ```
 
-You may install only the tarballs you need. Packing does not execute plugin code and does not require repository dependencies to be installed. Direct checkout-path installation is also possible after `npm install` at the repository root, but tarballs match npm packaging semantics and are the validated portable flow.
+Do not use a new arbitrary profile name such as `toolbox` for the default path: DSH initializes an unknown profile with the base bundle only, so it has no Web, TUI, or Headless entry surface. If you prefer another existing interactive profile, replace `web` consistently in the install, validation, and start commands.
+
+You may install only the tarballs you need. Packing does not execute plugin code and does not require repository dependencies to be installed. Direct checkout-path installation is also possible after `npm install` at the repository root, but tarballs match npm packaging semantics and are the validated portable flow. CI repeats this flow in a fresh temporary DSH home, checks that all four bundles compose, and boots the Web profile through its real `--help` path.
 
 Each package pins the small DSH tool-definition runtime needed for reliable out-of-tree installation. There are no install lifecycle scripts.
 
@@ -140,7 +143,7 @@ pnpm install --frozen-lockfile
 pnpm switchboard:gui
 ```
 
-Then open `http://127.0.0.1:4173/`. The server listens only on the local computer. It reads Profiles from `$DSH_HOME/profiles`, never displays API credential values, and requires a review step before writing Profile files.
+Then open the local URL printed in the terminal. The default is `http://127.0.0.1:4173/`; if that port is busy, Switchboard selects an available loopback port and prints the actual URL. The server listens only on the local computer. It reads Profiles from `$DSH_HOME/profiles`, never displays API credential values, and requires a review step before writing Profile files.
 
 ### Use DSH Switchboard from the command line
 

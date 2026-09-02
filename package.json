@@ -13,8 +13,10 @@
   },
   "scripts": {
     "test": "node --test packages/*/test/*.test.js",
-    "check": "node scripts/validate-workspace.js && npm test && npm run build --workspace @dsh-toolbox/dsh-switchboard-gui && npm run test:sites --workspace @dsh-toolbox/dsh-switchboard-gui",
+    "check": "node scripts/validate-workspace.js && npm test && npm run build --workspace @dsh-toolbox/dsh-switchboard-gui && npm run test:sites --workspace @dsh-toolbox/dsh-switchboard-gui && npm run smoke:gui",
     "pack:check": "npm pack --dry-run --workspace @dsh-toolbox/product-research-workbench && npm pack --dry-run --workspace @dsh-toolbox/context-switchboard && npm pack --dry-run --workspace @dsh-toolbox/plugin-preflight && npm pack --dry-run --workspace @dsh-toolbox/compatibility-radar && npm pack --dry-run --workspace @dsh-toolbox/dsh-switchboard",
+    "smoke:cold-install": "node scripts/smoke-cold-install.js",
+    "smoke:gui": "node scripts/smoke-gui-server.js",
     "switchboard": "node packages/dsh-switchboard/bin/dsh-switchboard.js",
     "switchboard:gui": "npm run build --workspace @dsh-toolbox/dsh-switchboard-gui && npm run start --workspace @dsh-toolbox/dsh-switchboard-gui",
     "switchboard:gui:dev": "npm run dev --workspace @dsh-toolbox/dsh-switchboard-gui --"

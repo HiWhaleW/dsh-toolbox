@@ -28,6 +28,11 @@ for (const packageName of packages) {
   if (manifest.devDependencies?.['@deepseek-ai/dsh-tools'] !== '0.1.1-rc.2') {
     throw new Error(`${packageName}: must keep DSH Tools available for local development only`)
   }
+  for (const peer of ['@deepseek-ai/dsh-tools', '@deepseek-ai/cordis']) {
+    if (manifest.peerDependenciesMeta?.[peer]?.optional !== true) {
+      throw new Error(`${packageName}: ${peer} must be an optional host-provided peer to avoid false install warnings`)
+    }
+  }
   if (manifest.license !== 'SEE LICENSE IN LICENSE') {
     throw new Error(`${packageName}: must point users to the packaged noncommercial license`)
   }
@@ -48,6 +53,9 @@ const switchboardDir = join(root.pathname, 'packages', 'dsh-switchboard')
 const switchboard = JSON.parse(await readFile(join(switchboardDir, 'package.json'), 'utf8'))
 if (switchboard.name !== '@dsh-toolbox/dsh-switchboard' || switchboard.private !== true) {
   throw new Error('dsh-switchboard: control plane must remain a private workspace package during technical preview')
+}
+if (switchboard.version !== rootManifest.version) {
+  throw new Error(`dsh-switchboard: version ${switchboard.version} does not match workspace ${rootManifest.version}`)
 }
 if (switchboard.dsh?.bundle) throw new Error('dsh-switchboard: external control plane must not declare itself as an in-process DSH bundle')
 if (switchboard.scripts?.preinstall || switchboard.scripts?.install || switchboard.scripts?.postinstall || switchboard.scripts?.prepare) {
