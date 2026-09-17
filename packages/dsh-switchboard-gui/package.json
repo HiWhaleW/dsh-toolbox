@@ -18,7 +18,7 @@
     "@vitejs/plugin-react": "6.1.0",
     "bootstrap-icons": "1.13.1",
     "vite": "8.2.2",
-    "react": "19.2.8",
+    "react": "19.3.0",
     "react-dom": "19.2.8"
   },
   "peerDependencies": {
